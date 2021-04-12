@@ -23,7 +23,7 @@ export default function Display({products, setProducts}) {
             
             {products.map((product) => (
                     <li  key={product.id}>
-                    <input className={`${product.done? "done": ""}`} type="text" value={product.item} onChange={(event) => event.preventDefault()}/>
+                    <p className={`${product.done? "done": ""}`} type="text" value={product.item} onChange={(event) => event.preventDefault()}/>
                   
                         <button  onClick={() => handleDone(product)}>
                             <i className="far fa-check-square"></i>
