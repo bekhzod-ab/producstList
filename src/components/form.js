@@ -1,17 +1,13 @@
 import React from 'react'
-import axios from "axios"
+
 
 
 
 export default function List({input,setInput,products,setProducts}){
     const submitHandler = (event) => {
-        
         event.preventDefault();
         setProducts([...products, { id: Math.random()*100, item: input, done: false}]);
         setInput("")
-        axios.post("url", input)
-        .then(() => console.log(input + "added") )
-        .catch((error) => console.log(error.message))
     }
     
     return(
