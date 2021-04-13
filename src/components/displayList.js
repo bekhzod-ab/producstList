@@ -1,48 +1,79 @@
 import axios from "axios"
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 
 
 
+export default function Display() {
+    const [input, setInput] = useState("");
+    const [products, setProducts] = useState([])
+    const [currentId, setCurrentId] = useState("")
 
-export default function Display({products, setProducts}) {
-   
+    useEffect(()=>{
+        axios.get("http://localhost:4004/products")
+        .then((result) => {
+            setProducts(result.data)
+        })
+        .catch((e) => console.log(e.message))
+    }, [products] )
+    
 
-    const handleDelete = ({id}) => {
-        axios.delete("http://localhost:7070/delete", {id})
-        .then(() => console.log(`product with following ${id} was deleted`))
-        .then(setProducts(products.filter((product) => product.id !== id)))
-    } 
-    const handleDone = (product) => {
-        axios.put("http://localhost:7070/edit" )
-        setProducts(products.map((item) => {
-            if(item.id === product.id) {
-                return {...item, done: true}
-        }return item 
-        }))
+
+    const submitHandler = (event) => {
+        event.preventDefault();
+        axios.post("http://localhost:4004/save", {input})
+        .then(() => console.log("success"));
+        setInput("")
+    }
+
+    const handleDone = () => {
+        axios.put(`http://localhost:4004/products/:${currentId}`)
+        .then(() => console.log("success"))
+        .catch((e) => console.log(e.message))
         
     }
+    // const submitHandler = (event) => {
+    //     event.preventDefault()
+    // }
+  
 
-    const saveHandler = (product) => {
-        axios.post("http://localhost:7070/products", product.item, product.done)
-        .then(() => console.log(`product was added`))
-        .catch((error) => console.log(error.message))
-    }
+
+
+    // const handleDelete = ({id}) => {
+    //     axios.delete(`http://localhost:7070/delete/${id}`)
+    //     .then(() => console.log(`product with following ${id} was deleted`))
+    //     .then(setProducts(products.filter((product) => product.id !== id)))
+    // }
+
+    
+        
+    // }
+
+    // const saveHandler = (product) => {
+    //     axios.post("http://localhost:4004/products", product.item, product.done)
+    //     .then(() => console.log(`product was added`))
+    //     .catch((error) => console.log(error.message))
+    // }
     
     return(
         <div>
-            
+            <form onSubmit={submitHandler}>
+            <input type="text" className="products-input"  value={input} onChange={(event) => setInput(event.target.value)}/>
+            <button type="submit" className="submit-button">Add a product</button>
+        </form>
+                  
+        
             {products.map((product) => (
                     <li  key={product.id}>
-                    <input className={`${product.done? "done": ""}`} type="text"  value={product.item} onChange={(event) => event.preventDefault()}/>
+                    <input className={`${product.done? "done": ""}`} type="text" value={product.item} onChange={(event) => event.preventDefault()}/>
                   
-                        <button onClick={() => handleDone(product)}>
+                        <button  value={currentId} onChange={(event) => setCurrentId(event.target.value)} onClick={handleDone}>
                             <i className="far fa-check-square"></i>
                         </button>
-                        <button onClick={() => handleDelete(product)}>
+                        <button id={product.id} >
                             <i className="far fa-trash-alt"></i>
                         </button>
                         <div>
-                        <button onClick={() => saveHandler(product)}>Save the list</button>
+                        <button>Save the list</button>
                 </div>
                     
                 </li>
@@ -53,4 +84,3 @@ export default function Display({products, setProducts}) {
 }
 
 
-// 
