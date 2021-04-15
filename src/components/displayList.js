@@ -6,53 +6,41 @@ import React, {useState, useEffect} from 'react'
 export default function Display() {
     const [input, setInput] = useState("");
     const [products, setProducts] = useState([])
-    const [currentId, setCurrentId] = useState("")
-
-    useEffect(()=>{
-        axios.get("http://localhost:4004/products")
+    
+    const fetchingProduct = () => {
+        axios.get("/api/products")
         .then((result) => {
             setProducts(result.data)
         })
         .catch((e) => console.log(e.message))
-    }, [products] )
+    }
+    useEffect(fetchingProduct, [] )
     
 
 
     const submitHandler = (event) => {
         event.preventDefault();
-        axios.post("http://localhost:4004/save", {input})
-        .then(() => console.log("success"));
+        axios.post("/api/save", {input})
+        .then(() => fetchingProduct());
         setInput("")
     }
 
-    const handleDone = () => {
-        axios.put(`http://localhost:4004/products/:${currentId}`)
-        .then(() => console.log("success"))
+    const handleDone = (_id) => {
+        axios.put(`/api/products/${_id}`)
+        .then(() => fetchingProduct() )
         .catch((e) => console.log(e.message))
         
     }
-    // const submitHandler = (event) => {
-    //     event.preventDefault()
-    // }
-  
-
-
-
-    // const handleDelete = ({id}) => {
-    //     axios.delete(`http://localhost:7070/delete/${id}`)
-    //     .then(() => console.log(`product with following ${id} was deleted`))
-    //     .then(setProducts(products.filter((product) => product.id !== id)))
-    // }
-
     
-        
-    // }
 
-    // const saveHandler = (product) => {
-    //     axios.post("http://localhost:4004/products", product.item, product.done)
-    //     .then(() => console.log(`product was added`))
-    //     .catch((error) => console.log(error.message))
-    // }
+
+    const handleDelete = (_id,item) => {
+        axios.delete(`/api/products/${_id}`)
+        .then(() => console.log(`${item} was deleted`))
+        .then(() => fetchingProduct())
+        .catch((e) => console.log(e.message))
+    }
+
     
     return(
         <div>
@@ -63,17 +51,17 @@ export default function Display() {
                   
         
             {products.map((product) => (
-                    <li  key={product.id}>
-                    <input className={`${product.done? "done": ""}`} type="text" value={product.item} onChange={(event) => event.preventDefault()}/>
+                    <li  key={product._id}>
+                    <input className={`${product.done? "done": ""}`} type="text" value={product.item} />
                   
-                        <button  value={currentId} onChange={(event) => setCurrentId(event.target.value)} onClick={handleDone}>
+                        <button  className="done-button" onClick={() => handleDone(product._id)}>
                             <i className="far fa-check-square"></i>
                         </button>
-                        <button id={product.id} >
+                        <button className="delete-button" onClick={() => handleDelete(product._id,product.item)}>
                             <i className="far fa-trash-alt"></i>
                         </button>
                         <div>
-                        <button>Save the list</button>
+                       
                 </div>
                     
                 </li>

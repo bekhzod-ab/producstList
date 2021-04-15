@@ -5,15 +5,22 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: blue;
+  background-color: #4e7a6f;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-
+i,button {
+  margin: 0 3px;
+  padding: 2px;
+  
+}
+input {
+  padding: 3px 5px;
+  margin: 3px;
+}
 .container {
   margin: 50px;
 }
@@ -25,4 +32,10 @@ li {
 .done {
   text-decoration: line-through;
   opacity: 0.8;
+}
+.delete-button:hover{
+  color: red;
+}
+.done-button:hover {
+  color: rgb(74, 202, 74)
 }
